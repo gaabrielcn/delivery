@@ -1,0 +1,85 @@
+<main>
+  <section id="inicio" class="form-container">
+    <h2>Formulário de Compra</h2>
+
+    <!-- Input de busca -->
+    <input type="text" [(ngModel)]="searchInput" name="searchInput" (input)="filterSuggestions()" placeholder="Buscar produtos...">
+
+    
+    <!-- Sugestões ao digitar -->
+    <ul *ngIf="filteredSuggestions.length > 0" class="suggestions-list">
+      <li *ngFor="let suggestion of filteredSuggestions" (click)="selectSuggestion(suggestion)">
+        {{ suggestion.nome }}
+      </li>
+    </ul>
+
+    <!-- Select de frutas -->
+    <div class="select-box">
+      <select (change)="updatePrice($event)">
+        <option value="">Selecione uma fruta</option>
+        <option *ngFor="let fruit of fruits" [value]="fruit.nome" [attr.data-price]="fruit.preco" [attr.data-unidade]="fruit.unidadePreco">
+          {{ fruit.nome }}
+        </option>
+      </select>
+    </div>
+    
+
+    <!-- Select de legumes -->
+    <div class="select-box">
+      <select (change)="updatePrice($event)">
+        <option value="">Selecione um legume</option>
+        <option *ngFor="let vegetable of vegetables" [value]="vegetable.nome" [attr.data-price]="vegetable.preco" [attr.data-unidade]="vegetable.unidadePreco">
+          {{ vegetable.nome }}
+        </option>
+      </select>
+    </div>
+    
+
+    <!-- Input de quantidade -->
+    <div class="quantity-box">
+      <input type="number" [(ngModel)]="quantity" name="quantity" (input)="updatePrice($event)" placeholder="Quantidade (kg)" step="0.1">
+      <p>{{ priceText }}</p>
+    </div>
+
+    <!-- Botão adicionar -->
+    <button type="button" (click)="addToCart()">Adicionar ao Carrinho</button>
+
+    <!-- Mensagem de feedback -->
+    <p *ngIf="feedbackMessage" style="color: green;">{{ feedbackMessage }}</p>
+  </section>
+
+  <!-- Carrinho -->
+  <section id="cart" class="cart-container">
+    <h2>Produtos no Carrinho</h2>
+    <ul>
+      <li *ngFor="let item of cartItems; let i = index">
+        {{ item.name }} - {{ item.quantity }}{{ item.unidade.toLowerCase() }} - R$ {{ item.price.toFixed(2) }}
+        <button (click)="removeFromCart(i)">🗑️</button>
+      </li>
+    </ul>
+    <p>Total: R$ {{ totalPrice.toFixed(2) }}</p>
+    <button (click)="showDeliveryForm()">Prosseguir para entrega</button>
+  </section>
+
+  <!-- Formulário de entrega -->
+  <div *ngIf="showForm" id="deliveryForm">
+    <h3>Dados Pessoais</h3>
+    <label>Nome:</label>
+    <input type="text" [(ngModel)]="deliveryData.name" name="name" required>
+
+    <label>Telefone:</label>
+    <input type="tel" [(ngModel)]="deliveryData.phone" name="phone" required>
+
+    <label>Endereço:</label>
+    <input type="text" [(ngModel)]="deliveryData.address" name="address" required>
+
+    <label>Forma de pagamento:</label>
+    <select [(ngModel)]="deliveryData.paymentMethod" name="paymentMethod" required>
+      <option value="pix">Pix</option>
+      <option value="dinheiro">Dinheiro</option>
+      <option value="cartao">Cartão</option>
+    </select>
+
+    <button (click)="finalizePurchase()">Finalizar compra</button>
+  </div>
+</main>

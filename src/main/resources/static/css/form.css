@@ -1,0 +1,185 @@
+/* Estilo para o header */
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    box-shadow: 0 0.1rem 0.5rem #ccc;
+    width: 100%;
+    background: var(--white);
+    transition: all 0.5s;
+    position: fixed; /* Garante que o header fique fixo */
+    z-index: 1000;
+    top: 0; /* Garantir que o header fique no topo */
+}
+
+/* Ajuste na caixa do formulário */
+.formulario {
+    padding: 20px;
+    max-width: 800px; /* Limita a largura do formulário */
+    margin-left: auto;
+    margin-right: auto; /* Centraliza o formulário */
+    background-color: #f9f9f9; /* Fundo para destacar o formulário */
+    border-radius: 10px; /* Borda arredondada */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombras suaves */
+    margin-top: 90px; /* Ajusta o espaço do topo, se necessário */
+}
+
+/* Título */
+.formulario h2 {
+    color: var(--green);
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Estilo para os labels */
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Estilo para o campo de busca e select */
+input[type="text"], input[type="number"], select {
+    width: 100%; /* O campo ocupa 100% do contêiner */
+    max-width: 300px; /* Limita o campo de busca e selects */
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    display: block;
+}
+
+/* Estilo para o botão de adicionar ao carrinho */
+button {
+    background-color: var(--green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #388E3C;
+}
+
+/* Estilo da área de seleção de produto */
+.produtoSelecionado {
+    margin-top: 20px;
+}
+
+/* Estilo do carrinho */
+.carrinho {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fff;  /* Fundo branco para dar o efeito de nota fiscal */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar destaque */
+    max-width: 400px;  /* Limita o tamanho da caixa do carrinho */
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ccc; /* Borda suave */
+    display: none; /* Inicialmente escondido, ficará visível quando produtos forem adicionados */
+    position: fixed;
+    right: 20px;  /* Distância do lado direito da tela */
+    top: 100px;  /* Distância do topo */
+    width: 300px;  /* Largura do "card" */
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo do título do carrinho */
+.carrinho h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #388e3c;
+}
+
+/* Estilo da lista de produtos no carrinho */
+#cartList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#cartList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#cartList li span {
+    font-weight: bold;
+}
+
+#cartList li button {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Estilo do total do carrinho */
+#totalPrice {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    color: #388e3c;
+}
+
+#cartList {
+    display: block;
+    list-style-type: none;
+    margin-top: 20px;
+}
+
+#cartList li {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+#cartList li button {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+
+/* Adicione isso ao seu form.css */
+.form-container {
+    margin-top: 80px; /* Ajuste conforme necessário */
+}
+
+#searchResults {
+    border: 1px solid #ccc;
+    max-height: 150px; /* Limita a altura da lista */
+    overflow-y: auto; /* Adiciona rolagem se necessário */
+    position: absolute; /* Para que fique sobre outros elementos */
+    background: white; /* Fundo branco para a lista */
+    z-index: 1000; /* Para que fique acima de outros elementos */
+    list-style-type: none; /* Remove os marcadores da lista */
+    padding: 0; /* Remove o padding */
+    margin: 0; /* Remove a margem */
+}
+
+#searchResults li {
+    padding: 10px; /* Espaçamento interno */
+    cursor: pointer; /* Muda o cursor para indicar que é clicável */
+}
+
+#searchResults li:hover {
+    background-color: #f0f0f0; /* Efeito hover */
+}

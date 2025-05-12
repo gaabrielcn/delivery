@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./css/extends.css">
+    <title>Hortifruti Mem de Sá</title>
+</head>
+<body>
+    <header>
+        <nav class="navigation">
+            <a href="index.html" class="logo"> <img src="./assets/logo1.jpg" alt="Frutas e Vegetais Frescos"> Hortifruti<span> Mem de Sá</span></a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html">Início</a></li>
+                <li class="nav-item"><a href="index.html#about">Sobre</a></li>
+                <li class="nav-item"><a href="index.html#contato">Contato</a></li>
+            </ul>
+            <div class="menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="form-container">
+            <h2>Formulário de Compra</h2>
+            <form id="productForm">
+                
+                <div>
+                    <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="filterProducts()">
+                    <ul id="searchResults"></ul>
+                </div>
+
+                <div class="select-box">
+                    <select id="fruits">
+                        <option value="">Selecione uma fruta</option>
+                        <option value="Maçã">Maçã</option>
+                        <option value="Banana">Banana</option>
+                        <option value="Laranja">Laranja</option>
+                    </select>
+                </div>
+                
+
+                <div class="select-box">
+                    <select id="vegetables">
+                        <option value="">Selecione um legume</option>
+                        <option value="Cenoura">Cenoura</option>
+                        <option value="Batata">Batata</option>
+                        <option value="Tomate">Tomate</option>
+                    </select>
+                </div>
+
+                <div class="quantity-box">
+                    <input type="number" id="quantity" placeholder="Quantidade (kg)" step="0.1">
+                    <p id="price"></p>
+                </div>
+
+                <button type="button" id="addToCart">Adicionar ao Carrinho</button>
+            </form>
+            
+        <p id="feedbackMessage" style="display:none; color: green;"></p>
+        </section>
+
+        <!-- Lista de compras ao lado -->
+        <section id="cart" class="cart-container">
+            <h2>Produtos no Carrinho</h2>
+            <ul id="cartList">
+                <!-- Os produtos selecionados aparecerão aqui -->
+            </ul>
+            <p id="totalPrice">Total: R$ 0,00</p>
+            <button id="proceedButton" onclick="showDeliveryForm()">Prosseguir para entrega</button>
+        </section>
+        <!-- Formulário de entrega (inicialmente oculto) -->
+<div id="deliveryForm" style="display: none;">
+    <h3>Dados Pessoais</h3>
+    <label for="name">Nome:</label>
+    <input type="text" id="name" required>
+    
+    <label for="phone">Telefone:</label>
+    <input type="tel" id="phone" required>
+    
+    <label for="address">Endereço:</label>
+    <input type="text" id="address" required>
+    
+    <label for="paymentMethod">Forma de pagamento:</label>
+    <select id="paymentMethod">
+        <option value="pix">Pix</option>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="cartao">Cartão</option>
+    </select>
+    
+    <button id="finalizeButton" onclick="finalizePurchase()">Finalizar compra</button>
+</div>
+    </main>
+
+    <script src="./js/scripts.js"></script>
+</body>
+</html>
