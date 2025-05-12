@@ -57,7 +57,7 @@ Para rodar o back-end, você precisará configurar o banco de dados **PostgreSQL
 1. Crie um banco de dados no PostgreSQL chamado `delivery_db`.
 2. Se você não alterou a configuração do banco no código, ele irá conectar automaticamente ao banco `delivery_db` com as credenciais padrão:
    - **Usuário**: `postgres`
-   - **Senha**: `admin`
+   - **Senha**: `123`
    
 Caso precise modificar essas configurações, edite o arquivo `src/main/resources/application.properties` 
 
