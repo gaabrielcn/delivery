@@ -11,24 +11,25 @@ import { ProdutoService } from '../../services/produto.service';
   styleUrls: ['./formulario.component.css']
 })
 export class FormularioComponent implements OnInit {
-
-  searchInput: string = '';
+  searchInput = '';
   filteredSuggestions: any[] = [];
   fruits: any[] = [];
   vegetables: any[] = [];
-  quantity: number = 0;
-  priceText: string = '';
+  selectedFruitName = '';
+  selectedVegetableName = '';
+  quantity = 0;
+  priceText = '';
+
   selectedProduct: any = null;
   cartItems: any[] = [];
-  totalPrice: number = 0;
-  showForm: boolean = false;
-  feedbackMessage: string = '';
+  totalPrice = 0;
 
-  deliveryData = {
-    name: '',
-    phone: '',
-    address: '',
-    paymentMethod: ''
+  showForm = false;
+  deliveryData = { 
+    name: '', 
+    phone: '', 
+    address: '', 
+    paymentMethod: 'pix' 
   };
 
   constructor(private produtoService: ProdutoService) {}
@@ -39,84 +40,100 @@ export class FormularioComponent implements OnInit {
     this.loadCart();
   }
 
-  loadProducts(tipo: string): void {
-    this.produtoService.getProdutosPorTipo(tipo).subscribe(
-      (produtos) => {
-        console.log(`Produtos recebidos para ${tipo}:`, produtos);
+  private loadProducts(tipo: string): void {
+    this.produtoService.getProdutosPorTipo(tipo).subscribe({
+      next: (produtos) => {
         if (tipo === 'FRUTA') {
           this.fruits = produtos;
+          console.log('Frutas carregadas:', this.fruits);
         } else {
           this.vegetables = produtos;
+          console.log('Legumes carregados:', this.vegetables);
         }
       },
-      (error) => {
-        console.error('Erro ao carregar produtos:', error);
-      }
-    );
+      error: (err) => console.error('Erro ao carregar produtos:', err)
+    });
   }
 
-  filterSuggestions(): void {
-    const searchTerm = this.searchInput.toLowerCase();
-    this.filteredSuggestions = [...this.fruits, ...this.vegetables].filter(produto =>
-      produto.nome.toLowerCase().includes(searchTerm)
-    );
+  onSearchInput(): void {
+    this.selectedFruitName = '';
+    this.selectedVegetableName = '';
+    
+    if (!this.searchInput) {
+      this.filteredSuggestions = [];
+      return;
+    }
+    
+    const term = this.searchInput.toLowerCase();
+    this.filteredSuggestions = [...this.fruits, ...this.vegetables]
+      .filter(p => p.nome.toLowerCase().includes(term));
   }
 
   selectSuggestion(produto: any): void {
-    this.selectedProduct = {
-      name: produto.nome,
-      price: produto.preco,
-      unidade: produto.unidadePreco
-    };
+    this.clearAllFields();
     this.searchInput = produto.nome;
+    this.selectedProduct = { 
+      name: produto.nome, 
+      price: produto.preco, 
+      unidade: produto.unidadePreco 
+    };
+    this.updatePrice();
     this.filteredSuggestions = [];
-    this.updatePrice(); // sem argumento
   }
 
-  updatePrice(event?: Event): void {
-    const selectElement = event?.target as HTMLSelectElement | undefined;
-    if (!selectElement) return;
+  onSelect(tipo: 'FRUTA' | 'LEGUME'): void {
+    this.searchInput = '';
+    this.filteredSuggestions = [];
 
-    const selectedOption = selectElement.selectedOptions[0];
-    if (!selectedOption) {
-      this.priceText = '';
+    const selectedName = tipo === 'FRUTA' ? this.selectedFruitName : this.selectedVegetableName;
+    const list = tipo === 'FRUTA' ? this.fruits : this.vegetables;
+    
+    if (tipo === 'FRUTA') {
+      this.selectedVegetableName = '';
+    } else {
+      this.selectedFruitName = '';
+    }
+
+    const produto = list.find(p => p.nome === selectedName);
+    if (produto) {
+      this.selectedProduct = { 
+        name: produto.nome, 
+        price: produto.preco, 
+        unidade: produto.unidadePreco 
+      };
+      this.updatePrice();
+    } else {
       this.selectedProduct = null;
+      this.priceText = '';
+    }
+  }
+
+  updatePrice(): void {
+    if (!this.selectedProduct || this.quantity <= 0) {
+      this.priceText = '';
       return;
     }
-
-    const price = parseFloat(selectedOption.dataset['price'] || '0');
-    const unidade = selectedOption.dataset['unidade'] || '';
-    const quantity = this.quantity;
-
-    if (quantity > 0) {
-      const total = (price * quantity).toFixed(2);
-      this.priceText = `Preço: R$ ${total} por ${unidade.toLowerCase()}`;
-      this.selectedProduct = {
-        name: selectedOption.value,
-        price,
-        unidade
-      };
-    }
+    const total = (this.selectedProduct.price * this.quantity).toFixed(2);
+    this.priceText = `Preço: R$ ${total}`;
   }
 
   addToCart(): void {
-    if (this.selectedProduct && this.quantity > 0) {
-      const itemTotal = this.selectedProduct.price * this.quantity;
-      const item = {
-        name: this.selectedProduct.name,
-        quantity: this.quantity,
-        price: itemTotal,
-        unidade: this.selectedProduct.unidade
-      };
-      this.cartItems.push(item);
-      this.totalPrice += itemTotal;
-      this.saveCart();
-      this.selectedProduct = null;
-      this.quantity = 0;
-      this.priceText = '';
-    } else {
-      alert('Por favor, selecione um produto e informe a quantidade.');
+    if (!this.selectedProduct || this.quantity <= 0) {
+      alert('Selecione um produto e informe uma quantidade válida.');
+      return;
     }
+
+    const itemTotal = this.selectedProduct.price * this.quantity;
+    this.cartItems.push({
+      name: this.selectedProduct.name,
+      quantity: this.quantity,
+      unidade: this.selectedProduct.unidade,
+      price: itemTotal
+    });
+    
+    this.totalPrice += itemTotal;
+    this.saveCart();
+    this.clearAllFields();
   }
 
   removeFromCart(index: number): void {
@@ -126,14 +143,14 @@ export class FormularioComponent implements OnInit {
     this.saveCart();
   }
 
-  saveCart(): void {
+  private saveCart(): void {
     localStorage.setItem('cart', JSON.stringify(this.cartItems));
   }
 
-  loadCart(): void {
-    const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
-    this.cartItems = savedCart;
-    this.totalPrice = savedCart.reduce((sum: number, item: any) => sum + item.price, 0);
+  private loadCart(): void {
+    const saved = localStorage.getItem('cart');
+    this.cartItems = saved ? JSON.parse(saved) : [];
+    this.totalPrice = this.cartItems.reduce((sum, it) => sum + it.price, 0);
   }
 
   showDeliveryForm(): void {
@@ -141,7 +158,35 @@ export class FormularioComponent implements OnInit {
   }
 
   finalizePurchase(): void {
-    console.log('Dados para envio:', this.deliveryData);
-    alert('Compra finalizada!');
+    if (!this.deliveryData.name || !this.deliveryData.phone || !this.deliveryData.address) {
+      alert('Preencha todos os campos obrigatórios.');
+      return;
+    }
+    
+    console.log('Compra finalizada:', {
+      items: this.cartItems,
+      total: this.totalPrice,
+      delivery: this.deliveryData
+    });
+    
+    alert(`Compra finalizada com sucesso!\nTotal: R$ ${this.totalPrice.toFixed(2)}`);
+    this.clearAll();
+  }
+
+  private clearAll(): void {
+    this.cartItems = [];
+    this.totalPrice = 0;
+    this.showForm = false;
+    this.deliveryData = { name: '', phone: '', address: '', paymentMethod: 'pix' };
+    localStorage.removeItem('cart');
+  }
+
+  private clearAllFields(): void {
+    this.searchInput = '';
+    this.selectedFruitName = '';
+    this.selectedVegetableName = '';
+    this.quantity = 0;
+    this.priceText = '';
+    this.selectedProduct = null;
   }
 }
